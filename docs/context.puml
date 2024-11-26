@@ -1,0 +1,29 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(user, "User")
+Person(marketing, "Marketing")
+Person(business, "Business")
+Person(devops, "DevopsTeam")
+
+System(bankuish, "Bankuish API", "Core System")
+System(gig, "Gig Platforms", "Service")
+System(partners, "Partners Services", "Service")
+System(identity, "Identity Service", "Service")
+System(monitoring, "Monitoring Service", "Service")
+System(analitycs, "Analytics Service", "Service")
+System(notification, "Notification Service", "Service")
+
+Rel(user, bankuish, "Uses")
+Rel(marketing, bankuish, "Uses")
+Rel(business, bankuish, "Uses")
+Rel(devops, bankuish, "Uses")
+
+Rel(bankuish, gig, "Fetches data from")
+Rel(bankuish, partners, "Uses and process batch csv files")
+Rel(bankuish, monitoring, "Track services performance")
+Rel(bankuish, identity, "Authenticate and authorize users")
+Rel(bankuish, analitycs, "Track the user journey and business metrics")
+Rel(bankuish, notification, "Send email, sms, push notifications")
+
+@enduml

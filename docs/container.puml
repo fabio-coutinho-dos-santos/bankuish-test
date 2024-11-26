@@ -1,0 +1,97 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+AddRelTag("dashed", $lineStyle = DashedLine())
+AddElementTag("users", $bgColor="#890B07", $fontColor="white")
+AddElementTag("database", $bgColor="#0E6655", $fontColor="white")
+AddElementTag("external", $bgColor="#999999", $fontColor="black")
+AddElementTag("storage", $bgColor="#C0392B", $fontColor="white")
+AddElementTag("GCE", $shape=EightSidedShape(), $bgColor="#000066", $fontColor="white", $legendText="micro service\neight sided")
+AddElementTag("CloudRun", $shape=EightSidedShape(), $bgColor="#334d4d", $fontColor="white", $legendText="micro service\neight sided")
+AddElementTag("Function", $shape=EightSidedShape(), $bgColor="#660000", $fontColor="white", $legendText="micro service\neight sided")
+
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/google.puml
+
+Title "Bankuish - Container Diagram"
+
+Boundary(users, "Users") {
+  Person(user, "User", $sprite="users", $tags="users")
+  Person(marketing, "Marketing", $sprite="users", $tags="users")
+  Person(devops, "DevopsTeam", $sprite="users", $tags="users")
+  Person(business, "Business", $sprite="users", $tags="users")
+}
+
+Component(services, "Services", $sprite="google")
+
+  Component(gateway, "Api Gateway", "Api Gateway")
+  Boundary(services, "Services"){ 
+  Component(bankuish, "Bankuish API", "REST API", $tags="GCE")
+  Component(gig, "Gig Platforms", "REST API", $tags="CloudRun")
+  Component(identity, "Identity Svc", "REST API", $tags="CloudRun")
+  Component(monitoring, "Monitoring Svc", "REST API", $tags="CloudRun")
+  Component(analytics, "Analytics Svc", "Message Svc", $tags="CloudRun")
+  Component(partners, "Partners Svc", "REST API", $tags="CloudRun")
+  Component(notification, "Notification Svc", "Message Svc", $tags="Function")
+  Component(etl, "ETL Svc", $tags="Function")
+
+  ComponentDb(bankuish_db, "Bankuish DB", "Cloud SQL", $tags="database")
+  ComponentDb(gig_db, "Gig DB", "Cloud SQL", $tags="database")
+  ComponentDb(identity_db, "Identity DB", "Cloud SQL", $tags="database")
+  ComponentDb(monitoring_db, "Monitoring DB", "Cloud SQL", $tags="database")
+  ComponentDb(analytics_db, "Analytics DB", "Cloud SQL", $tags="database")
+  ComponentDb(partners_db, "Partners DB", "Cloud SQL", $tags="database")
+  ComponentDb(storage, "Cloud Storage", "Storage", $tags="storage")
+}
+
+Rel(user, gateway, "Uses", "HTTPS")
+
+Rel(marketing, gateway, "Uses", "HTTPS")
+Rel(marketing, gateway, "Uses", "HTTPS")
+Rel(devops, gateway, "Uses", "HTTPS")
+Rel(business, gateway, "Uses", "HTTPS")
+
+Rel(gateway, bankuish, "Uses", "HTTPS")
+Rel(gateway, gig, "Uses", "HTTPS")
+Rel(gateway, identity, "Uses", "HTTPS")
+Rel(gateway, monitoring, "Uses", "HTTPS")
+Rel(gateway, analytics, "Uses", "HTTPS")
+Rel(gateway, partners, "Uses", "HTTPS")
+
+Rel_R(bankuish, gig, "Uses", "HTTPS")
+Rel_R(bankuish, identity, "Uses", "HTTPS")
+Rel_R(bankuish, monitoring, "Uses", "Pub/Sub", $tags="dashed")
+Rel_R(bankuish, analytics, "Uses", "Pub/Sub", $tags="dashed")
+Rel_R(bankuish, notification, "Uses", "Pub/Sub", $tags="dashed")
+Rel_R(bankuish, partners, "Uses", "Pub/Sub / HTTPS", $tags="dashed")
+
+Rel(bankuish, bankuish_db, "Uses", "JDBC")
+Rel(gig, gig_db, "Uses", "JDBC")
+Rel(identity, identity_db, "Uses", "JDBC")
+Rel(monitoring, monitoring_db, "Uses", "JDBC")
+Rel(analytics, analytics_db, "Uses", "JDBC")
+Rel(partners, partners_db, "Uses", "JDBC")
+
+Rel(bankuish, storage, "Uses", "HTTP", $tags="dashed")
+Rel(partners, etl, "Uses", "HTTP", $tags="dashed")
+Rel(etl, storage, "Uses", "HTTP", $tags="dashed")
+Rel_L(etl, partners_db, "Uses", "JDBC", $tags="dashed")
+Rel_D(identity, analytics, "Uses", "Pub/Sub", $tags="dashed")
+Rel_D(identity, notification, "Uses", "Pub/Sub", $tags="dashed")
+
+
+Boundary(external_svc, "External Services") {
+  Component(sms, "Sms Svc", "Twilio", $tags="external")
+  Component(push, "Push Notification Svc", "Firebase", $tags="external")
+  Component(email, "Email Svc", "SendGrid", $tags="external")
+}
+
+Rel_U(notification, external_svc, "Uses", "HTTPS")
+
+
+@enduml
