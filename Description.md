@@ -34,7 +34,7 @@ System designed to meet the requirements of Bankuish
 
 - Use the principles of clean architecture combined with some tactical elements of domain-driven design to implement all services that will compose the system. Suggested folder structure for the project:
 
-![Alt text](code-design.png)
+![Alt text](docs/code-design.png)
 
 ### **1. Clean Architecture**
 
@@ -69,7 +69,7 @@ Focused on handling domain complexity, organizing business logic modularly.
 
 - Context Diagram
 
-  ![Alt Text](context.png)
+  ![Alt Text](docs/context.png)
 
   - The diagram illustrates **Bankuish API** interactions with users and external systems. Users such as **User**, **Marketing**, **Business**, and **DevOps Team** utilize the API for functionalities, service monitoring, and performance metrics. The API integrates with external systems like **Gig Platforms** for data collection, **Partners Services** for CSV file processing, and **Identity Service** for authentication. It also connects to **Monitoring**, **Analytics**, and **Notification** services to track performance, generate metrics, and send notifications.
 
@@ -77,7 +77,7 @@ Focused on handling domain complexity, organizing business logic modularly.
 
 - Container Diagram
 
-  ![Alt text](container.png)
+  ![Alt text](docs/container.png)
 
   - This container diagram details the internal architecture of the **Bankuish API**, showing interactions between its components and external systems. **Bankuish API** comprises several microservices like **Gig Platforms**, **Identity Service**, **Monitoring Service**, **Analytics Service**, **Partners Service**, **Notification Service**, and **ETL Service**, each implemented as a separate container hosted in environments like **Google Cloud Run**, **Google Cloud Functions**, and **Google Compute Engine**.
 
@@ -87,7 +87,7 @@ Focused on handling domain complexity, organizing business logic modularly.
 
 ### Detailed System Design
 
-![Alt text](system-design.png)
+![Alt text](docs/system-design.png)
 
 The **Bankuish API** architecture is designed to ensure high availability, security, and scalability, aligned with the needs of a modern financial platform. Based on the context and container diagrams, this expanded solution includes essential components to optimize performance and traffic management.
 
